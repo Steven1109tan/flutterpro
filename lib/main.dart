@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:table_calendar/table_calendar.dart';
-
+import 'wifiCheck.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -43,48 +42,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String _networkStatus1 = '';
-  String _imagePath = '';
-  Connectivity connectivity = Connectivity();
 
-  @override
-  void initState() {
-    super.initState();
-    checkConnectivity1();
-  }
 
-  void checkConnectivity1() async {
-    var connectivityResult = await connectivity.checkConnectivity();
-    var conn = getConnectionValue(connectivityResult);
-    String statusMessage = 'Check Connection: ' + conn;
-    String imagePath = conn == 'None'
-        ? 'assets/images/no_internet.png'
-        : 'assets/images/internet.png';
-
-    setState(() {
-      _networkStatus1 = statusMessage;
-      _imagePath = imagePath;
-    });
-  }
-
-  String getConnectionValue(var connectivityResult) {
-    String status = '';
-    switch (connectivityResult) {
-      case ConnectivityResult.mobile:
-        status = 'Mobile';
-        break;
-      case ConnectivityResult.wifi:
-        status = 'Wi-Fi';
-        break;
-      case ConnectivityResult.none:
-        status = 'None';
-        break;
-      default:
-        status = 'None';
-        break;
-    }
-    return status;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,14 +73,8 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
               child: const Text('Wifi test'),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Wificheck(
-                      networkStatus: _networkStatus1,
-                      imagePath: _imagePath,
-                    ),
-                  ),
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const Wificheck()),
                 );
               },
             ),
@@ -192,55 +145,5 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 }
 
-class Wificheck extends StatelessWidget {
-  final String networkStatus;
-  final String imagePath;
-
-  const Wificheck({
-    Key? key,
-    required this.networkStatus,
-    required this.imagePath,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Check Wifi'),
-        actions: [
-          IconButton(
-            icon: Icon(MyApp.themeNotifier.value == ThemeMode.light
-                ? Icons.light_mode
-                : Icons.dark_mode),
-            onPressed: () {
-              MyApp.themeNotifier.value =
-              MyApp.themeNotifier.value == ThemeMode.light
-                  ? ThemeMode.dark
-                  : ThemeMode.light;
-            },
-          ),
-        ],
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Text(
-              networkStatus,
-              style: Theme.of(context).textTheme.headline6,
-              textAlign: TextAlign.center,
-            ),
-            Image.asset(
-              imagePath,
-              width: 400,
-              height: 400,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 
