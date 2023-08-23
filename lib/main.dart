@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'wifiCheck.dart';
+import 'CalendarScreen.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: 'Doge\'s wifi checker',
           theme: ThemeData(
-            colorScheme: ColorScheme.light().copyWith(
+            colorScheme: const ColorScheme.light().copyWith(
               primary: Colors.orange,
             ),
             useMaterial3: true,
@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
+  // ignore: use_key_in_widget_constructors
   const MyHomePage({required this.title});
 
   final String title;
@@ -83,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => CalendarScreen()),
+                  MaterialPageRoute(builder: (context) => const CalendarScreen()),
                 );
               },
             ),
@@ -93,57 +94,4 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
-class CalendarScreen extends StatefulWidget {
-  const CalendarScreen({Key? key}) : super(key: key);
-
-  @override
-  _CalendarScreenState createState() => _CalendarScreenState();
-}
-
-class _CalendarScreenState extends State<CalendarScreen> {
-  DateTime today = DateTime.now();
-
-  void _onDaySelected(DateTime day, DateTime focusedDay) {
-    setState(() {
-      today = day;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Calendar'),
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            Text(
-              "Working Schedule",
-              style: TextStyle(fontSize: 20),
-            ),
-            Container(
-              child: TableCalendar(
-                locale: "en_US",
-                rowHeight: 43,
-                headerStyle: HeaderStyle(
-                  formatButtonVisible: false,
-                  titleCentered: true,
-                ),
-                focusedDay: today,
-                selectedDayPredicate: (day) => isSameDay(day, today),
-                firstDay: DateTime.utc(2023, 8, 22),
-                lastDay: DateTime.utc(2023, 8, 22),
-                onDaySelected: _onDaySelected,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-
 
