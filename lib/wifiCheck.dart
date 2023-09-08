@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:http/http.dart' as http;
+
 import 'main.dart';
 
 class Wificheck extends StatefulWidget {
@@ -7,9 +9,9 @@ class Wificheck extends StatefulWidget {
 
   @override
   State<Wificheck> createState() => WificheckState();
-  }
+}
 
-class WificheckState extends State<Wificheck>{
+class WificheckState extends State<Wificheck> {
   String _networkStatus1 = '';
   String _imagePath = '';
   Connectivity connectivity = Connectivity();
@@ -17,14 +19,13 @@ class WificheckState extends State<Wificheck>{
   @override
   void initState() {
     super.initState();
-    checkConnectivity1();
+    checkConnectivityAndInternet();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.orange,
         title: const Text('SWifi Check'),
         actions: [
           IconButton(
@@ -47,34 +48,77 @@ class WificheckState extends State<Wificheck>{
           children: <Widget>[
             Text(
               _networkStatus1,
-              style: Theme.of(context).textTheme.titleLarge,
+              style: Theme.of(context).textTheme.headline6,
               textAlign: TextAlign.center,
             ),
             Image.asset(
-             _imagePath,
+              _imagePath,
               width: 400,
               height: 400,
             ),
-            ElevatedButton(onPressed: checkConnectivity1, child: const Text('Check Connection')),
+            ElevatedButton(
+              onPressed: checkConnectivityAndInternet,
+              child: const Text('Check Connection & Internet'),
+            ),
           ],
         ),
-
       ),
     );
   }
 
-  void checkConnectivity1() async {
+  Future<void> checkConnectivityAndInternet() async {
     var connectivityResult = await connectivity.checkConnectivity();
     var conn = getConnectionValue(connectivityResult);
-    String statusMessage = 'Check Connection: $conn';
+ //String statusMessage = 'Check Connection: $conn';
+    String statusMessage = '';
     String imagePath = conn == 'None'
         ? 'assets/images/no_internet.png'
         : 'assets/images/internet.png';
+
+    String internetAvailability = await _checkInternetAvailability();
+    if (internetAvailability == 'Has Internet') {
+      try {
+        final response = await http.get(Uri.parse('https://www.google.com/'));
+        if (response.statusCode == 200) {
+          final startTime = DateTime.now();
+          await http.get(Uri.parse('https://www.google.com/'));
+          final endTime = DateTime.now();
+          final duration = endTime.difference(startTime);
+          final milliseconds = duration.inMilliseconds;
+
+          if (milliseconds > 500) {
+            statusMessage = '$conn : Poor Internet $milliseconds';
+            imagePath = 'assets/images/poor_wifi.png';
+          }else {
+            statusMessage = '$conn - Good Internet $milliseconds';
+            imagePath = 'assets/images/internet.png';
+          }
+        }
+      } catch (e) {
+        debugPrint('$e');
+      }
+    } else {
+      statusMessage = '$conn : No Internet';
+      imagePath = 'assets/images/no_internet.png';
+    }
 
     setState(() {
       _networkStatus1 = statusMessage;
       _imagePath = imagePath;
     });
+  }
+
+  Future<String> _checkInternetAvailability() async {
+    try {
+      final response = await http.get(Uri.parse('https://www.google.com/'));
+      if (response.statusCode == 200) {
+        return 'Has Internet';
+      } else {
+        return 'No Internet';
+      }
+    } catch (e) {
+      return 'No Internet';
+    }
   }
 
   String getConnectionValue(var connectivityResult) {

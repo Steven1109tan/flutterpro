@@ -19,13 +19,15 @@ class MyApp extends StatelessWidget {
           title: 'Doge\'s wifi checker',
           theme: ThemeData(
             colorScheme: const ColorScheme.light().copyWith(
-              primary: Colors.orange,
+              primary: Colors.lightBlueAccent,
+              brightness: Brightness.dark,
+
             ),
             useMaterial3: true,
           ),
           darkTheme: ThemeData.dark(),
           themeMode: currentMode,
-          home: const MyHomePage(title: 'Doge\'s wifi checker'),
+          home: const MyHomePage(title: 'Flutter Projects'),
         );
       },
     );
@@ -50,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.orange,
+        //backgroundColor: Colors.orange,
         title: Text(widget.title),
         actions: [
           IconButton(
