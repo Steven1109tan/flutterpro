@@ -14,8 +14,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   Map<DateTime, List<Event>> events = {};
-  TextEditingController _eventController = TextEditingController();
-  TextEditingController _descriptionController = TextEditingController(); // Add this line
+  final TextEditingController _eventController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController(); // Add this line
   late final ValueNotifier<List<Event>> _selectedEvents;
 
   @override
@@ -53,16 +53,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
       builder: (context) {
         return AlertDialog(
           scrollable: true,
-          title: Text("Add Event"),
+          title: const Text("Add Event"),
           content: Column(
             children: [
               TextField(
                 controller: _eventController,
-                decoration: InputDecoration(labelText: 'Event Name'),
+                decoration: const InputDecoration(labelText: 'Event Name'),
               ),
               TextField(
                 controller: _descriptionController,
-                decoration: InputDecoration(labelText: 'Description'),
+                decoration: const InputDecoration(labelText: 'Description'),
               ),
             ],
           ),
@@ -77,10 +77,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   description: _descriptionController.text,
                  // date: selectedDay,
                 ));
+                setState(() {
                 events[selectedDay] = eventList;
                 _selectedEvents.value = _getEventsForDay(selectedDay);
+                });
               },
-              child: Text("Submit"),
+              child: const Text("Submit"),
             )
           ],
         );
@@ -93,19 +95,19 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Calendar'),
+        title: const Text('Calendar'),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _addEvent,
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
       body: Center(
 
         child: Column(
           children: [
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             TableCalendar(
-              calendarStyle: CalendarStyle(
+              calendarStyle: const CalendarStyle(
                 // Customize the background color of the selected day
                 selectedDecoration: BoxDecoration(
                   color: Colors.blue, // Customize the background color of the selected day
@@ -115,7 +117,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 markersAlignment: Alignment.bottomCenter, // Customize marker alignment
                 outsideTextStyle: TextStyle(color: Colors.grey), // Customize text color for days outside the month
               ),
-              headerStyle: HeaderStyle(
+              headerStyle: const HeaderStyle(
                 formatButtonVisible: false,
                 titleCentered: true,
                 leftChevronIcon: ColorFiltered(
@@ -163,7 +165,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 //   ),
                 // ),
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             ValueListenableBuilder<List<Event>>(
               valueListenable: _selectedEvents,
               builder: (context, value, _) {
@@ -178,11 +180,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
                           color: Colors.blue, // Set the background color to blue
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        margin: EdgeInsets.only(bottom: 5),
+                        margin: const EdgeInsets.only(bottom: 5),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Padding(
+                            const Padding(
                               padding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                               child: Text(
                                 '9:am - 9:pm',
@@ -196,10 +198,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                                   child: Text(
                                     value[index].name,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18,
@@ -207,10 +209,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                   ),
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
                                   child: Text(
                                     value[index].description,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 12,
                                     ),
@@ -218,7 +220,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                 ),
                               ],
                             ),
-                           Column(
+                           const Column(
                               //  crossAxisAlignment: CrossAxisAlignment,
                               //  crossAxisAlignment: CrossAxisAlignment,
                                 children: [

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'dart:async';
 import 'package:http/http.dart' as http;
 
 import 'main.dart';
@@ -13,13 +14,21 @@ class Wificheck extends StatefulWidget {
 
 class WificheckState extends State<Wificheck> {
   String _networkStatus1 = '';
-  String _imagePath = '';
+  String _imagePath = 'assets/images/internet.png';
   Connectivity connectivity = Connectivity();
+  ConnectivityResult connectivityResult =ConnectivityResult.none;
 
   @override
   void initState() {
     super.initState();
-    checkConnectivityAndInternet();
+    Timer.periodic(const Duration(milliseconds: 500),(timer) async {
+      ConnectivityResult result = await connectivity.checkConnectivity();
+      setState(() {
+        connectivityResult =result;
+        checkConnectivityAndInternet();
+      });
+
+    });
   }
 
   @override
@@ -67,7 +76,6 @@ class WificheckState extends State<Wificheck> {
   }
 
   Future<void> checkConnectivityAndInternet() async {
-    var connectivityResult = await connectivity.checkConnectivity();
     var conn = getConnectionValue(connectivityResult);
  //String statusMessage = 'Check Connection: $conn';
     String statusMessage = '';
