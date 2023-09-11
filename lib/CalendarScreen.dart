@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'event.dart';
+import 'main.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({Key? key}) : super(key: key);
@@ -24,14 +25,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
     _selectedDay = _focusedDay;
     _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
   }
-
-  // @override
-  // void dispose() {
-  //   _eventController.dispose();
-  //   _descriptionController.dispose(); // Add this line
-  //   _selectedEvents.dispose();
-  //   super.dispose();
-  // }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     if (!isSameDay(_selectedDay, selectedDay)) {
@@ -96,6 +89,19 @@ class _CalendarScreenState extends State<CalendarScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Calendar'),
+        actions: [
+          IconButton(
+            icon: Icon(MyApp.themeNotifier.value == ThemeMode.light
+                ? Icons.light_mode
+                : Icons.dark_mode),
+            onPressed: () {
+              MyApp.themeNotifier.value =
+              MyApp.themeNotifier.value == ThemeMode.light
+                  ? ThemeMode.dark
+                  : ThemeMode.light;
+            },
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _addEvent,
@@ -172,81 +178,100 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 return Expanded(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0), // Adjust the padding as needed
-                       child: ListView.builder(
+                       child:
+                       ListView.builder(
                          itemCount: value.length,
                          itemBuilder: (context, index) {
-                         return Container(
-                        decoration: BoxDecoration(
-                          color: Colors.blue, // Set the background color to blue
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        margin: const EdgeInsets.only(bottom: 5),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                              child: Text(
-                                '9:am - 9:pm',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                                  child: Text(
-                                    value[index].name,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-                                  child: Text(
-                                    value[index].description,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                           const Column(
-                              //  crossAxisAlignment: CrossAxisAlignment,
-                              //  crossAxisAlignment: CrossAxisAlignment,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                                    child: Icon(Icons.add_business),
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                                    child: Text(
-                                      'AL',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-
-                          ],
-                        ),
-
-                         );
-                    },
-                  ),
+                           return Card(
+                             elevation: 3,
+                             margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                             child: Padding(
+                               padding: EdgeInsets.all(16),
+                               child: Row(
+                                 crossAxisAlignment: CrossAxisAlignment.center,
+                                 children: [
+                                   Container(
+                                     width: 2, // Width of the vertical line
+                                     color: Colors.black87, // Color of the vertical line
+                                     margin: EdgeInsets.only(right: 16), // Margin between line and time
+                                   ),
+                                   Expanded(
+                                     flex: 2,
+                                     child: Column(
+                                       crossAxisAlignment: CrossAxisAlignment.center,
+                                       mainAxisAlignment: MainAxisAlignment.center,
+                                       children: [
+                                         Text(
+                                           '9:00 AM - 9:00 PM',
+                                           style: TextStyle(
+                                             color: Colors.black87,
+                                             fontSize: 12,
+                                           ),
+                                         ),
+                                       ],
+                                     ),
+                                   ),
+                                   SizedBox(width: 16), // Add spacing between time and title
+                                   Expanded(
+                                     flex: 5,
+                                     child: Column(
+                                       crossAxisAlignment: CrossAxisAlignment.start,
+                                       children: [
+                                         Text(
+                                           value[index].name,
+                                           style: TextStyle(
+                                             color: Colors.black,
+                                             fontWeight: FontWeight.bold,
+                                             fontSize: 18,
+                                           ),
+                                         ),
+                                         SizedBox(height: 8),
+                                         Text(
+                                           value[index].description,
+                                           maxLines: 3,
+                                           overflow: TextOverflow.ellipsis,
+                                           style: TextStyle(
+                                             color: Colors.black87,
+                                             fontSize: 14,
+                                           ),
+                                         ),
+                                       ],
+                                     ),
+                                   ),
+                                   Expanded(
+                                     flex: 1,
+                                     child: Column(
+                                       crossAxisAlignment: CrossAxisAlignment.end,
+                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                       children: [
+                                         InkWell(
+                                           onTap: () {
+                                             // Handle Google Maps link here
+                                             // You can launch Google Maps with the event location.
+                                           },
+                                           child: Icon(
+                                             Icons.location_on,
+                                             color: Colors.blue,
+                                             size: 24,
+                                           ),
+                                         ),
+                                         SizedBox(height: 8),
+                                         Text(
+                                           'AL',
+                                           style: TextStyle(
+                                             color: Colors.blue,
+                                             fontSize: 12,
+                                           ),
+                                         ),
+                                       ],
+                                     ),
+                                   ),
+                                 ],
+                               ),
+                             ),
+                           );
+                         },
+                       )
                     ),
                 );
               },

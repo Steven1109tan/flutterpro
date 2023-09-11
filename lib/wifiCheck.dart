@@ -65,10 +65,6 @@ class WificheckState extends State<Wificheck> {
               width: 400,
               height: 400,
             ),
-            ElevatedButton(
-              onPressed: checkConnectivityAndInternet,
-              child: const Text('Check Connection & Internet'),
-            ),
           ],
         ),
       ),
