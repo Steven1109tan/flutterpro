@@ -13,7 +13,7 @@ class Wificheck extends StatefulWidget {
 }
 
 class WificheckState extends State<Wificheck> {
-  String _networkStatus1 = '';
+  String _networkStatus1 = 'No internet';
   String _imagePath = 'assets/images/internet.png';
   Connectivity connectivity = Connectivity();
   ConnectivityResult connectivityResult =ConnectivityResult.none;
@@ -22,13 +22,21 @@ class WificheckState extends State<Wificheck> {
   void initState() {
     super.initState();
     Timer.periodic(const Duration(milliseconds: 500),(timer) async {
-      ConnectivityResult result = await connectivity.checkConnectivity();
-      setState(() {
-        connectivityResult =result;
-        checkConnectivityAndInternet();
-      });
-
+      if(!mounted) {
+        timer.cancel();
+      }else{
+        ConnectivityResult result = await connectivity.checkConnectivity();
+        setState(() {
+          connectivityResult = result;
+          checkConnectivityAndInternet();
+        });
+      }
     });
+  }
+
+  @override
+  void dispose(){
+    super.dispose();
   }
 
   @override
