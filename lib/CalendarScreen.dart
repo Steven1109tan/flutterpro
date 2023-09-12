@@ -12,7 +12,7 @@ class CalendarScreen extends StatefulWidget {
 
 
 class _CalendarScreenState extends State<CalendarScreen> {
-  DateTime _focusedDay = DateTime.now();
+  DateTime _focusedDay = DateTime.utc(DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0, 0);
   DateTime? _selectedDay;
   Map<DateTime, List<Event>> events = {};
   final TextEditingController _eventController = TextEditingController();
