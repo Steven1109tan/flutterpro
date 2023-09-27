@@ -44,19 +44,19 @@ class WificheckState extends State<Wificheck> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('SWifi Check'),
-        actions: [
-          IconButton(
-            icon: Icon(MyApp.themeNotifier.value == ThemeMode.light
-                ? Icons.light_mode
-                : Icons.dark_mode),
-            onPressed: () {
-              MyApp.themeNotifier.value =
-              MyApp.themeNotifier.value == ThemeMode.light
-                  ? ThemeMode.dark
-                  : ThemeMode.light;
-            },
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     icon: Icon(MyApp.themeNotifier.value == ThemeMode.light
+        //         ? Icons.light_mode
+        //         : Icons.dark_mode),
+        //     onPressed: () {
+        //       MyApp.themeNotifier.value =
+        //       MyApp.themeNotifier.value == ThemeMode.light
+        //           ? ThemeMode.dark
+        //           : ThemeMode.light;
+        //     },
+        //   ),
+        // ],
       ),
       body: Center(
         child: Column(

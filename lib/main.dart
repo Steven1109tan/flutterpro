@@ -1,72 +1,144 @@
 import 'package:flutter/material.dart';
+import 'package:wifi_connectivity_test/webview.dart';
+import 'Geofence+ui.dart';
+import 'list.dart';
 import 'wifiCheck.dart';
 import 'CalendarScreen.dart';
-void main() {
-  runApp(const MyApp());
+import 'package:provider/provider.dart';
+
+void main() => runApp(
+  ChangeNotifierProvider<ThemeChanger>(
+    create: (_) => ThemeChanger(),
+    child: MyApp(),
+  ),
+);
+
+class ThemeChanger with ChangeNotifier {
+  bool _isDarkMode = false;
+
+  bool get isDarkMode => _isDarkMode;
+
+  void toggleMode() {
+    _isDarkMode = !_isDarkMode;
+    notifyListeners();
+  }
 }
 
 class MyApp extends StatelessWidget {
-  static final ValueNotifier<ThemeMode> themeNotifier =
-  ValueNotifier(ThemeMode.light);
   const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<ThemeMode>(
-      valueListenable: themeNotifier,
-      builder: (_, ThemeMode currentMode, __) {
-        return MaterialApp(
-          title: 'Doge\'s wifi checker',
-          theme: ThemeData(
-            colorScheme: const ColorScheme.light().copyWith(
-              primary: Colors.lightBlueAccent,
-              brightness: Brightness.dark,
-
-            ),
-            useMaterial3: true,
-          ),
-          darkTheme: ThemeData.dark(),
-          themeMode: currentMode,
-          home: const MyHomePage(title: 'Flutter Projects'),
-        );
-      },
+    return MaterialApp(
+      title: 'Flutter Projects',
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      themeMode: Provider.of<ThemeChanger>(context).isDarkMode
+          ? ThemeMode.dark
+          : ThemeMode.light,
+      home: const MyHomePage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  // ignore: use_key_in_widget_constructors
-  const MyHomePage({required this.title});
+class MyHomePage extends StatelessWidget {
+  const MyHomePage();
 
-  final String title;
+  // Function to navigate to WiFi test screen
+  void navigateToWifiTest(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => const Wificheck()),
+    );
+  }
 
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
+  // Function to navigate to Calendar screen
+  void navigateToCalendar(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const CalendarScreen()),
+    );
+  }
 
-class _MyHomePageState extends State<MyHomePage> {
-
-
+  // Function to navigate to Webview screen
+  void navigateToWebview(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => WebViewExample()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final themeChanger = Provider.of<ThemeChanger>(context);
+    Color appBarColor = themeChanger.isDarkMode ? Colors.black : Colors.white;
+
     return Scaffold(
-      appBar: AppBar(
-        //backgroundColor: Colors.orange,
-        title: Text(widget.title),
+      appBar:
+      AppBar(
+        title: Text(
+          'Flutter Projectss',
+          style: TextStyle(
+            color: themeChanger.isDarkMode
+                ? Colors.white
+                : Colors.black,
+          ),
+        ),
+        backgroundColor: appBarColor,
         actions: [
           IconButton(
-            icon: Icon(MyApp.themeNotifier.value == ThemeMode.light
-                ? Icons.light_mode
-                : Icons.dark_mode),
+            icon: Icon(
+              themeChanger.isDarkMode
+                  ? Icons.light_mode
+                  : Icons.dark_mode,
+              color: Colors.blue,
+            ),
             onPressed: () {
-              MyApp.themeNotifier.value =
-              MyApp.themeNotifier.value == ThemeMode.light
-                  ? ThemeMode.dark
-                  : ThemeMode.light;
+              themeChanger.toggleMode();
             },
           ),
         ],
+        iconTheme: IconThemeData(
+          color: Colors.blue,
+        ),
+      ),
+
+
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: appBarColor,
+              ),
+              child: Text(
+                'Drawer Header',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ListTile(
+              title: Text('WiFi Test'),
+              onTap: () {
+                navigateToWifiTest(context);
+              },
+            ),
+            ListTile(
+              title: Text('Calendar'),
+              onTap: () {
+                navigateToCalendar(context);
+              },
+            ),
+            ListTile(
+              title: Text('Webview'),
+              onTap: () {
+                navigateToWebview(context);
+              },
+            ),
+            // Add more ListTiles for additional functions
+          ],
+        ),
       ),
       body: Center(
         child: Column(
@@ -74,26 +146,39 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             ElevatedButton(
-              child: const Text('Wifi test'),
+              child: const Text('WiFi test'),
               onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const Wificheck()),
-                );
+                navigateToWifiTest(context);
               },
             ),
+            SizedBox(height: 10.0), // Add vertical spacing
             ElevatedButton(
               child: const Text('Calendar'),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const CalendarScreen()),
+                navigateToCalendar(context);
+              },
+            ),
+            SizedBox(height: 10.0), // Add vertical spacing
+            ElevatedButton(
+              child: const Text('Webview'),
+              onPressed: () {
+                navigateToWebview(context);
+              },
+            ),
+            SizedBox(height: 10.0),
+            ElevatedButton(
+              child: const Text('List Grouping'),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => MyItemList()),
                 );
               },
             ),
+            SizedBox(height: 10.0),
+            // Add more buttons or content here
           ],
         ),
       ),
     );
   }
 }
-
